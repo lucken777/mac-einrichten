@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mac einrichten</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Plan: eine schmale Abhak-Spalte; Phasenfarbe sagt, für welche Maschine ein Schritt ist (System · Privat · Firma). */
+:root{
+  --paper:#f3f4f0; --card:#ffffff; --ink:#1b201d; --muted:#5b645e; --line:#dcdfd8; --code:#eceee8;
+  --sys:#8a5a0c; --privat:#4450c4; --firma:#2d7429; --done:#2d7429; --focus:#4450c4;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",-apple-system,sans-serif;
+  --body:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,Monaco,"Courier New",monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#141715; --card:#1c201d; --ink:#e6eae5; --muted:#9aa39c; --line:#2d332f; --code:#232824;
+    --sys:#e0a64f; --privat:#a3abff; --firma:#86cf7b; --done:#86cf7b; --focus:#a3abff; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#141715; --card:#1c201d; --ink:#e6eae5; --muted:#9aa39c; --line:#2d332f; --code:#232824;
+  --sys:#e0a64f; --privat:#a3abff; --firma:#86cf7b; --done:#86cf7b; --focus:#a3abff; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 var(--body)}
+a{color:var(--privat);text-underline-offset:2px;word-break:break-word}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px 80px}
+header{padding:32px 0 8px;display:grid;gap:10px}
+h1{font:700 2.1rem/1.1 var(--display);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:0;max-width:62ch}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.fact{font:500 .8rem/1 var(--mono);padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--muted)}
+.bar{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line);margin:0 -16px;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.track{flex:1 1 180px;height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--done);transition:width .25s}
+.count{font:500 .9rem var(--mono);font-variant-numeric:tabular-nums;min-width:7ch}
+button{font:600 .85rem var(--body);border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:6px;padding:7px 11px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px;color:var(--muted);font-size:.85rem;align-items:center}
+.chip{display:inline-block;font:600 .72rem/1 var(--body);letter-spacing:.04em;text-transform:uppercase;padding:4px 6px;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.c-mac{color:var(--muted)} .c-term{color:var(--ink)} .c-web{color:var(--privat)} .c-fr{color:var(--sys)} .c-pc{color:var(--firma)}
+section.phase{margin-top:30px;border-left:4px solid var(--ph);padding-left:14px}
+.p-sys{--ph:var(--sys)} .p-privat{--ph:var(--privat)} .p-firma{--ph:var(--firma)} .p-spaeter{--ph:var(--muted)}
+.phead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.phead h2{font:700 1.35rem/1.2 var(--display);margin:0;text-wrap:balance}
+.letter{font:700 1.35rem var(--display);color:var(--ph)}
+.pcount{margin-left:auto;font:500 .85rem var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.pnote{color:var(--muted);margin:6px 0 0;max-width:65ch}
+ol.steps{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:10px}
+li.step{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:grid;grid-template-columns:28px 1fr;gap:4px 10px}
+li.step.next{border-color:var(--ph);box-shadow:0 0 0 1px var(--ph)}
+li.step.done{opacity:.62}
+li.step.done .t{text-decoration:line-through;text-decoration-thickness:1px}
+.step input[type=checkbox]{width:22px;height:22px;margin:2px 0 0;accent-color:var(--done);cursor:pointer}
+.shead{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.num{font:500 .8rem var(--mono);color:var(--ph)}
+.t{font-weight:600;cursor:pointer}
+.body{grid-column:2;color:var(--ink);max-width:65ch}
+.body p{margin:4px 0}
+.body ul{margin:4px 0;padding-left:20px}
+.body li{margin:2px 0}
+.muted{color:var(--muted)}
+.next-tag{display:none;font:600 .72rem var(--body);color:var(--ph);text-transform:uppercase;letter-spacing:.05em}
+li.step.next .next-tag{display:inline}
+.cmd{display:flex;align-items:stretch;gap:0;margin:8px 0 4px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--code)}
+.cmd code{flex:1;font:400 .86rem/1.45 var(--mono);padding:8px 10px;overflow-x:auto;white-space:pre;-webkit-user-select:all;user-select:all}
+.cmd button{border:0;border-left:1px solid var(--line);border-radius:0;background:transparent;white-space:nowrap}
+kbd{font:500 .8rem var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--card)}
+.out{font:400 .84rem var(--mono);background:var(--code);padding:1px 5px;border-radius:3px}
+.help{margin-top:34px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.help h2{font:700 1.2rem var(--display);margin:0 0 6px}
+.help dl{margin:0;display:grid;gap:8px}
+.help dt{font-weight:600}
+.help dd{margin:0;color:var(--muted)}
+@media (max-width:420px){h1{font-size:1.7rem} li.step{grid-template-columns:24px 1fr;padding:10px}}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+/* altes Safari (macOS 10.12) kennt kein gap bei Flexbox: Abstände per Rand */
+.kein-flexgap .shead>*,.kein-flexgap .facts>*,.kein-flexgap .legend>*,.kein-flexgap .bar>*,.kein-flexgap .phead>*,.kein-flexgap .cmd>*{margin-right:8px;margin-bottom:6px}
+.kein-flexgap .cmd>*{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Mac einrichten</h1>
+  <p class="sub">MacBook Pro 2016: erst macOS aktualisieren, dann beide Content-Maschinen in deinem Mac-Benutzer. Safari ist dein privater Browser, Chrome der für Physiopoly. Hak jeden Schritt ab, sobald er erledigt ist. Der Haken bleibt in diesem Browser gespeichert.</p>
+  <div class="facts">
+    <span class="fact">macOS 10.12 → 12 Monterey</span>
+    <span class="fact">Python 3.15.2 ist installiert</span>
+    <span class="fact">Privat · localhost:8757</span>
+    <span class="fact">Firma · localhost:8790</span>
+    <span class="fact">Safari = privat · Chrome = Physiopoly</span>
+  </div>
+</header>
+
+<div class="bar" role="region" aria-label="Fortschritt">
+  <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+  <span class="count" id="count">0 / 0</span>
+  <button class="primary" id="weiter" type="button">Zum nächsten Schritt</button>
+  <button id="reset" type="button">Zurücksetzen</button>
+</div>
+
+<div class="legend">Wo:
+  <span class="chip c-mac">Mac</span><span class="chip c-term">Terminal</span><span class="chip c-web">Browser</span><span class="chip c-fr">Freundin</span><span class="chip c-pc">PC / USB</span>
+  <span>· Terminal öffnen: <kbd>Cmd</kbd> + <kbd>Leertaste</kbd>, „Terminal“ tippen, Enter</span>
+</div>
+
+<!-- A ------------------------------------------------------------------ -->
+<section class="phase p-sys" data-phase="A">
+  <div class="phead"><span class="letter">A</span><h2>Vor dem Update</h2><span class="pcount"></span></div>
+  <p class="pnote">Das Update ersetzt nur das System. Alle Benutzer und ihre Dateien bleiben erhalten, auch die deiner Freundin.</p>
+  <ol class="steps">
+    <li class="step" id="a1"><input type="checkbox" id="cb-a1" aria-labelledby="t-a1"><div class="shead"><span class="num">A1</span><label class="t" id="t-a1" for="cb-a1">Mit deiner Freundin sprechen</label><span class="chip c-fr">Freundin</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Das Update betrifft auch ihren Benutzer. Frag, ob sie sehr alte Programme nutzt (etwa vor 2015, z. B. altes Office oder Adobe). Die starten danach nicht mehr, ihre Dateien bleiben aber.</p></div></li>
+    <li class="step" id="a2"><input type="checkbox" id="cb-a2" aria-labelledby="t-a2"><div class="shead"><span class="num">A2</span><label class="t" id="t-a2" for="cb-a2">Admin-Passwort klären</label><span class="chip c-fr">Freundin</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Entweder gibt sie ihr Passwort beim Update ein, oder sie macht deinen Benutzer zum Admin:</p>
+        <ul><li>Apple-Menü  → <b>Systemeinstellungen</b> → <b>Benutzer &amp; Gruppen</b></li><li>unten links auf das <b>Schloss</b> klicken, ihr Passwort eingeben</li><li>deinen Benutzer wählen, Häkchen bei <b>„Der Benutzer darf diesen Computer verwalten“</b></li></ul>
+        <p class="muted">Als Admin brauchst du später nur noch dein eigenes Passwort, z. B. auch beim Installieren von Chrome (E1).</p></div></li>
+    <li class="step" id="a3"><input type="checkbox" id="cb-a3" aria-labelledby="t-a3"><div class="shead"><span class="num">A3</span><label class="t" id="t-a3" for="cb-a3">Backup machen (empfohlen)</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Time Machine auf eine externe Festplatte: Festplatte anstecken, dann Systemeinstellungen → <b>Time Machine</b> → Backup-Volume auswählen. Das sichert alle Benutzer, also nur mit ihrem Einverständnis.</p></div></li>
+    <li class="step" id="a4"><input type="checkbox" id="cb-a4" aria-labelledby="t-a4"><div class="shead"><span class="num">A4</span><label class="t" id="t-a4" for="cb-a4">Speicherplatz prüfen: mindestens 30 GB frei</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Apple-Menü  → <b>Über diesen Mac</b> → Reiter <b>Festplatten</b>. Der freie Platz zählt für den ganzen Mac.</p></div></li>
+    <li class="step" id="a5"><input type="checkbox" id="cb-a5" aria-labelledby="t-a5"><div class="shead"><span class="num">A5</span><label class="t" id="t-a5" for="cb-a5">Netzteil anschließen</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Das Update dauert 1–2 Stunden. Den Deckel offen lassen.</p></div></li>
+  </ol>
+</section>
+
+<!-- B ------------------------------------------------------------------ -->
+<section class="phase p-sys" data-phase="B">
+  <div class="phead"><span class="letter">B</span><h2>macOS Monterey installieren</h2><span class="pcount"></span></div>
+  <p class="pnote">Monterey (macOS 12) ist die neueste Version, die Apple für ein MacBook Pro 2016 anbietet. Kostenlos.</p>
+  <ol class="steps">
+    <li class="step" id="b1"><input type="checkbox" id="cb-b1" aria-labelledby="t-b1"><div class="shead"><span class="num">B1</span><label class="t" id="t-b1" for="cb-b1">Installer im App Store laden</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Safari öffnen: <a href="https://apps.apple.com/de/app/macos-monterey/id1576738294">apps.apple.com/de/app/macos-monterey</a>. Der App Store geht auf, dort auf <b>Laden</b> klicken (etwa 12 GB).</p>
+        <p class="muted">Geht der Link nicht: <a href="https://support.apple.com/de-de/102662">support.apple.com/de-de/102662</a> öffnen und bei „macOS Monterey“ auf den App-Store-Link klicken.</p></div></li>
+    <li class="step" id="b2"><input type="checkbox" id="cb-b2" aria-labelledby="t-b2"><div class="shead"><span class="num">B2</span><label class="t" id="t-b2" for="cb-b2">Admin-Name und -Passwort eingeben, wenn gefragt</label><span class="chip c-fr">Freundin</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Bist du nach A2 selbst Admin, reicht dein eigenes Passwort.</p></div></li>
+    <li class="step" id="b3"><input type="checkbox" id="cb-b3" aria-labelledby="t-b3"><div class="shead"><span class="num">B3</span><label class="t" id="t-b3" for="cb-b3">Installation starten</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Das Fenster <b>„macOS Monterey installieren“</b> öffnet sich von selbst. Dann <b>Fortfahren</b> → der Lizenz zustimmen → Festplatte <b>„Macintosh HD“</b> wählen → <b>Installieren</b>.</p>
+        <p><b>Nicht</b> das Festplattendienstprogramm öffnen und nichts löschen.</p></div></li>
+    <li class="step" id="b4"><input type="checkbox" id="cb-b4" aria-labelledby="t-b4"><div class="shead"><span class="num">B4</span><label class="t" id="t-b4" for="cb-b4">Warten, bis der Mac fertig ist</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Er startet mehrmals neu, zwischendurch ist der Bildschirm schwarz mit Apfel und Balken. Das ist normal, nicht zuklappen und nicht ausschalten.</p></div></li>
+    <li class="step" id="b5"><input type="checkbox" id="cb-b5" aria-labelledby="t-b5"><div class="shead"><span class="num">B5</span><label class="t" id="t-b5" for="cb-b5">In deinem Benutzer anmelden</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Fragen zu Apple-ID, Siri usw. kannst du mit „Später“ oder „Überspringen“ beantworten.</p></div></li>
+  </ol>
+</section>
+
+<!-- C ------------------------------------------------------------------ -->
+<section class="phase p-sys" data-phase="C">
+  <div class="phead"><span class="letter">C</span><h2>Nach dem Update prüfen</h2><span class="pcount"></span></div>
+  <ol class="steps">
+    <li class="step" id="c1"><input type="checkbox" id="cb-c1" aria-labelledby="t-c1"><div class="shead"><span class="num">C1</span><label class="t" id="t-c1" for="cb-c1">Python prüfen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Im Terminal einfügen, Enter. Dort muss <span class="out">Python 3.15.2</span> stehen.</p>
+        <div class="cmd"><code>python3 --version</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="c2"><input type="checkbox" id="cb-c2" aria-labelledby="t-c2"><div class="shead"><span class="num">C2</span><label class="t" id="t-c2" for="cb-c2">git prüfen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Hier sollte eine Versionsnummer erscheinen.</p>
+        <div class="cmd"><code>git --version</code><button type="button" data-copy>Kopieren</button></div>
+        <p class="muted">Kommt stattdessen <span class="out">invalid active developer path</span>: das hier einfügen, im Fenster auf <b>Installieren</b> klicken und warten. Danach nochmal prüfen.</p>
+        <div class="cmd"><code>xcode-select --install</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="c3"><input type="checkbox" id="cb-c3" aria-labelledby="t-c3"><div class="shead"><span class="num">C3</span><label class="t" id="t-c3" for="cb-c3">claude.ai im Browser anmelden</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Safari ist nach dem Update aktuell genug und bleibt dein <b>privater</b> Browser. Dort meldest du dich auf claude.ai mit deinem privaten Konto an. Diese Seite findest du dort unter deinen Artifacts wieder.</p></div></li>
+  </ol>
+</section>
+
+<!-- D ------------------------------------------------------------------ -->
+<section class="phase p-privat" data-phase="D">
+  <div class="phead"><span class="letter">D</span><h2>Private Maschine einrichten</h2><span class="pcount"></span></div>
+  <p class="pnote">Privat, also in Safari mit deinen privaten Konten. Ordner: <span class="out">~/content-maschine-diy</span>, Adresse <span class="out">localhost:8757</span>.</p>
+  <ol class="steps">
+    <li class="step" id="d1" data-vorab="1"><input type="checkbox" id="cb-d1" aria-labelledby="t-d1"><div class="shead"><span class="num">D1</span><label class="t" id="t-d1" for="cb-d1">Maschine auf den Mac geholt</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p class="muted">Schon erledigt am 04.11. (<span class="out">Resolving deltas … done</span>). Der Ordner bleibt beim Update erhalten.</p></div></li>
+    <li class="step" id="d2"><input type="checkbox" id="cb-d2" aria-labelledby="t-d2"><div class="shead"><span class="num">D2</span><label class="t" id="t-d2" for="cb-d2">Neuen privaten KIE-Key anlegen</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p><a href="https://kie.ai">kie.ai</a> mit deinem <b>privaten</b> Konto öffnen → links <b>API Key</b> → einen neuen Key erzeugen → kopieren.</p>
+        <p class="muted">Den alten Key noch nicht löschen, das kommt erst in D13.</p></div></li>
+    <li class="step" id="d3"><input type="checkbox" id="cb-d3" aria-labelledby="t-d3"><div class="shead"><span class="num">D3</span><label class="t" id="t-d3" for="cb-d3">Einrichten starten</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Einfügen, Enter. Zuerst baut es die Python-Umgebung und lädt Pakete. Das dauert 2–3 Minuten. Gelbe Warnungen von „pip“ kannst du ignorieren.</p>
+        <div class="cmd"><code>bash ~/content-maschine-diy/einrichten.command</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="d4"><input type="checkbox" id="cb-d4" aria-labelledby="t-d4"><div class="shead"><span class="num">D4</span><label class="t" id="t-d4" for="cb-d4">KIE-Key einfügen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Bei <span class="out">Einfügen (Cmd+V, bleibt unsichtbar)</span> drückst du <kbd>Cmd</kbd>+<kbd>V</kbd> und dann Enter. Man sieht dabei nichts, das ist richtig. Danach muss <span class="out">✓ KIE_KEY gespeichert (32 Zeichen)</span> erscheinen.</p></div></li>
+    <li class="step" id="d5"><input type="checkbox" id="cb-d5" aria-labelledby="t-d5"><div class="shead"><span class="num">D5</span><label class="t" id="t-d5" for="cb-d5">Optionale Fragen überspringen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Es kommen etwa zehn Fragen wie <span class="out">Optional: IMGBB_KEY … eintragen? [j/N]</span>. Bei jeder einfach <b>Enter</b> drücken.</p></div></li>
+    <li class="step" id="d6"><input type="checkbox" id="cb-d6" aria-labelledby="t-d6"><div class="shead"><span class="num">D6</span><label class="t" id="t-d6" for="cb-d6">Bilder-ZIP: ablehnen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Meist steht dort nur <span class="out">kein *bilder*.zip gefunden</span>, das ist in Ordnung. Fragt es nach <b>physio-bilder.zip</b>, tippst du <b>n</b> und Enter. Die gehören zur Firma.</p></div></li>
+    <li class="step" id="d7"><input type="checkbox" id="cb-d7" aria-labelledby="t-d7"><div class="shead"><span class="num">D7</span><label class="t" id="t-d7" for="cb-d7">Claude Code versuchen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Bei <span class="out">Claude Code … jetzt versuchen? [j/N]</span> tippst du <b>j</b> und Enter. Es gibt zwei mögliche Ergebnisse:</p>
+        <ul><li><span class="out">→ Claude Code läuft auf diesem Rechner nicht</span>: Die Texte laufen über KIE. Einfach weitermachen.</li>
+          <li><span class="out">✓ Claude Code läuft hier</span>: Nach dem Einrichten musst du dich einmal anmelden. Der Befehl unten öffnet den Browser, dort meldest du dich mit dem <b>privaten</b> Claude-Konto an. Danach im Terminal <span class="out">/exit</span> tippen.</li></ul>
+        <div class="cmd"><code>~/.local/bin/claude</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="d8"><input type="checkbox" id="cb-d8" aria-labelledby="t-d8"><div class="shead"><span class="num">D8</span><label class="t" id="t-d8" for="cb-d8">Tests grün, „Fertig“</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Es laufen 17 Zeilen mit <b>✓</b> durch, dann steht dort <span class="out">== Fertig</span>. Drück eine beliebige Taste. Steht irgendwo ein ✗: Screenshot an Claude.</p></div></li>
+    <li class="step" id="d9"><input type="checkbox" id="cb-d9" aria-labelledby="t-d9"><div class="shead"><span class="num">D9</span><label class="t" id="t-d9" for="cb-d9">Maschine starten</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Der Browser öffnet <span class="out">http://localhost:8757/sprueche-pro.html</span>. Der Report ist leer, solange keine Excel-Listen drin sind. Das ist richtig so. <b>Lass das Terminalfenster offen</b>, sonst ist die Maschine aus.</p>
+        <div class="cmd"><code>bash ~/content-maschine-diy/start.command</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="d10"><input type="checkbox" id="cb-d10" aria-labelledby="t-d10"><div class="shead"><span class="num">D10</span><label class="t" id="t-d10" for="cb-d10">Start ins Dock legen</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Im Finder <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> → Ordner <b>content-maschine-diy</b> → Rechtsklick auf <b>start.command</b> → <b>Alias erzeugen</b>. Das Alias in „Start privat“ umbenennen und ins Dock ziehen, rechts neben den Papierkorb. Danach reicht ein Klick. Kommt „kann nicht geöffnet werden“: Rechtsklick → Öffnen.</p></div></li>
+    <li class="step" id="d11"><input type="checkbox" id="cb-d11" aria-labelledby="t-d11"><div class="shead"><span class="num">D11</span><label class="t" id="t-d11" for="cb-d11">Erste Excel-Listen reinlegen</label><span class="chip c-mac">Mac</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Die Exporte legst du nach <span class="out">~/content-maschine-diy/Seiten/&lt;Gruppe&gt;/&lt;Seite&gt;.xlsx</span>, z. B. <span class="out">Seiten/1 Mondbaby/Mondbaby.xlsx</span>. Gruppen-Exporte kommen nach <span class="out">Seiten/6 Gruppe/</span>. Danach das Maschinen-Fenster schließen und neu starten.</p></div></li>
+    <li class="step" id="d12"><input type="checkbox" id="cb-d12" aria-labelledby="t-d12"><div class="shead"><span class="num">D12</span><label class="t" id="t-d12" for="cb-d12">Neuen KIE-Key auch am PC eintragen</label><span class="chip c-pc">PC</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Am PC diese Datei mit dem Editor öffnen:</p>
+        <div class="cmd"><code>C:\Users\LUCK9R\Desktop\AI JACK\2-ECOMMERCE\content-maschine-diy\config.json</code><button type="button" data-copy>Kopieren</button></div>
+        <p>Bei <span class="out">"KIE_KEY"</span> den alten Wert durch den neuen ersetzen und speichern. Hast du auch bei imgbb einen neuen Key, genauso bei <span class="out">"IMGBB_KEY"</span>. Den Key bitte nicht in den Chat schreiben.</p></div></li>
+    <li class="step" id="d13"><input type="checkbox" id="cb-d13" aria-labelledby="t-d13"><div class="shead"><span class="num">D13</span><label class="t" id="t-d13" for="cb-d13">Alten KIE-Key löschen und Claude Bescheid geben</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Erst jetzt auf kie.ai den <b>alten</b> Key löschen. Dann schreib Claude im Chat <b>„neuer Key ist drin“</b>. Ich starte die PC-Maschine neu und prüfe den Key ohne Kosten. Mondbaby Studio, Video-Studio und Nachgedanken lesen ihn aus derselben Datei.</p></div></li>
+  </ol>
+</section>
+
+<!-- E ------------------------------------------------------------------ -->
+<section class="phase p-firma" data-phase="E">
+  <div class="phead"><span class="letter">E</span><h2>Physiopoly-Maschine einrichten</h2><span class="pcount"></span></div>
+  <p class="pnote">Im selben Mac-Benutzer, aber in <b>Chrome</b>. Dort meldest du nur Firmen-Konten an, Safari bleibt privat. Ordner: <span class="out">~/physiopoly-content-maschine</span>, Adresse <span class="out">localhost:8790</span>. Beide Maschinen können gleichzeitig laufen, jede in ihrem eigenen Terminalfenster.</p>
+  <ol class="steps">
+    <li class="step" id="e1"><input type="checkbox" id="cb-e1" aria-labelledby="t-e1"><div class="shead"><span class="num">E1</span><label class="t" id="t-e1" for="cb-e1">Chrome installieren</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Safari <a href="https://www.google.com/chrome/">google.com/chrome</a> öffnen → <b>Chrome herunterladen</b> → die Datei <span class="out">googlechrome.dmg</span> öffnen → das Chrome-Symbol auf <b>Programme</b> ziehen.</p>
+        <p class="muted">Fragt der Mac nach einem Admin-Passwort und du hast keins: Chrome stattdessen in deinen Benutzerordner ziehen. Dafür im Finder <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd>, dort einen Ordner „Programme“ anlegen. Bietet Google für Monterey keine Version mehr an, nimm <a href="https://www.mozilla.org/de/firefox/">Firefox</a> als Firmen-Browser.</p></div></li>
+    <li class="step" id="e2"><input type="checkbox" id="cb-e2" aria-labelledby="t-e2"><div class="shead"><span class="num">E2</span><label class="t" id="t-e2" for="cb-e2">In Chrome nur Firmen-Konten anmelden</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Chrome meldest du dich an bei: <b>claude.ai</b> (Firmen-Abo), <b>kie.ai</b> (Firma), <b>console.apify.com</b> und <b>firecrawl.dev</b>. Die Frage nach Synchronisierung mit einem Google-Konto kannst du mit „Nein“ beantworten.</p>
+        <p class="muted">Faustregel: In Chrome kein privates Konto, in Safari kein Firmen-Konto.</p></div></li>
+    <li class="step" id="e3"><input type="checkbox" id="cb-e3" aria-labelledby="t-e3"><div class="shead"><span class="num">E3</span><label class="t" id="t-e3" for="cb-e3">GitHub-Token um das Firmen-Repo erweitern</label><span class="chip c-web">Safari</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Der Mac merkt sich nur eine GitHub-Anmeldung. Darum bekommt dein vorhandener Token „Mac privat“ das zweite Repo einfach dazu:</p>
+        <ul><li>in Safari öffnen: <a href="https://github.com/settings/personal-access-tokens">github.com/settings/personal-access-tokens</a></li>
+          <li>den Token <b>„Mac privat“</b> anklicken → <b>Edit</b></li>
+          <li>bei <b>Repository access</b> zusätzlich <b>physiopoly-content-maschine</b> auswählen. <span class="out">content-maschine-diy</span> bleibt dabei ausgewählt.</li>
+          <li><b>Contents</b> bleibt auf <b>Read-only</b> → unten <b>Update</b></li></ul></div></li>
+    <li class="step" id="e4"><input type="checkbox" id="cb-e4" aria-labelledby="t-e4"><div class="shead"><span class="num">E4</span><label class="t" id="t-e4" for="cb-e4">Firmen-Maschine holen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Einfügen, Enter. Normalerweise fragt git diesmal nicht nach dem Passwort, weil der Mac den Token schon kennt. Am Ende steht <span class="out">Resolving deltas … done</span>.</p>
+        <div class="cmd"><code>git clone https://github.com/lucken777/physiopoly-content-maschine.git ~/physiopoly-content-maschine</code><button type="button" data-copy>Kopieren</button></div>
+        <p class="muted">Kommt <span class="out">Repository not found</span>: E3 wurde noch nicht gespeichert. Fragt es doch nach einem Passwort: Bei Username <b>lucken777</b> eingeben. Für das Password auf der Token-Seite <b>Regenerate token</b> klicken, den neuen Token kopieren und einfügen. Der Mac merkt sich dann den neuen.</p></div></li>
+    <li class="step" id="e5"><input type="checkbox" id="cb-e5" aria-labelledby="t-e5"><div class="shead"><span class="num">E5</span><label class="t" id="t-e5" for="cb-e5">Bilder-ZIP per USB-Stick (optional)</label><span class="chip c-pc">PC / USB</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Am PC liegt <span class="out">physio-bilder.zip</span> (224 MB, 1.093 gesicherte Instagram- und TikTok-Bilder) hier:</p>
+        <div class="cmd"><code>C:\Users\LUCK9R\Desktop\AI JACK\2-ECOMMERCE\physiopoly-content-maschine\_fuer-den-mac</code><button type="button" data-copy>Kopieren</button></div>
+        <p>Auf dem Mac legst du sie <b>direkt in den Ordner <span class="out">physiopoly-content-maschine</span></b>: im Finder <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> und dann diesen Ordner öffnen. Nicht auf den Schreibtisch und nicht in Downloads, sonst fragt auch die private Maschine danach.</p></div></li>
+    <li class="step" id="e6"><input type="checkbox" id="cb-e6" aria-labelledby="t-e6"><div class="shead"><span class="num">E6</span><label class="t" id="t-e6" for="cb-e6">Firmen-Keys in Chrome bereithalten</label><span class="chip c-web">Chrome</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Kopier jeden erst, wenn das Skript danach fragt:</p>
+        <ul><li><b>KIE:</b> <a href="https://kie.ai">kie.ai</a> → API Key</li>
+          <li><b>Apify:</b> <a href="https://console.apify.com">console.apify.com</a> → Settings → API &amp; Integrations</li>
+          <li><b>Firecrawl:</b> <a href="https://www.firecrawl.dev">firecrawl.dev</a> → Dashboard → API Keys</li></ul>
+        <p class="muted">Fehlt dir ein Key noch, drück im Skript Enter und hol ihn später nach. Dafür startest du das Einrichten einfach nochmal.</p></div></li>
+    <li class="step" id="e7"><input type="checkbox" id="cb-e7" aria-labelledby="t-e7"><div class="shead"><span class="num">E7</span><label class="t" id="t-e7" for="cb-e7">Firma einrichten</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><div class="cmd"><code>bash ~/physiopoly-content-maschine/einrichten.command</code><button type="button" data-copy>Kopieren</button></div>
+        <ul><li>Nacheinander <b>KIE_KEY</b>, <b>APIFY_TOKEN</b> und <b>FIRECRAWL_API_KEY</b> einfügen: jeweils <kbd>Cmd</kbd>+<kbd>V</kbd>, dann Enter</li>
+          <li>optionale Fragen <span class="out">[j/N]</span>: Enter</li>
+          <li><span class="out">✓ … Listen nach Seiten/ kopiert</span>: das sind deine Physio-Listen vom 21.07.</li>
+          <li><span class="out">physio-bilder.zip übernehmen? [J/n]</span>: Enter, das heißt ja</li>
+          <li><span class="out">Claude Code … jetzt versuchen? [j/N]</span>: <b>n</b>. In diesem Mac-Benutzer gehört Claude Code zu deinem privaten Konto.</li>
+          <li>Tests mit ✓, dann <span class="out">== Fertig</span>, beliebige Taste</li></ul></div></li>
+    <li class="step" id="e8"><input type="checkbox" id="cb-e8" aria-labelledby="t-e8"><div class="shead"><span class="num">E8</span><label class="t" id="t-e8" for="cb-e8">Nur falls in D7 „✓ Claude Code läuft hier“ stand: Firmen-Texte auf KIE stellen</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Sonst würde die Firmen-Maschine ihre Texte über dein <b>privates</b> Claude-Abo schreiben. Einfügen, Enter. Danach muss <span class="out">ok</span> erscheinen. Stand in D7 „läuft nicht“, hak diesen Schritt einfach ab.</p>
+        <div class="cmd"><code>python3 -c "import json,os; p=os.path.expanduser('~/physiopoly-content-maschine/config.json'); d=json.load(open(p)); d['TEXT_KI']='kie'; json.dump(d, open(p,'w'), indent=2); print('ok')"</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="e9"><input type="checkbox" id="cb-e9" aria-labelledby="t-e9"><div class="shead"><span class="num">E9</span><label class="t" id="t-e9" for="cb-e9">Firmen-Maschine starten</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><div class="cmd"><code>bash ~/physiopoly-content-maschine/start.command</code><button type="button" data-copy>Kopieren</button></div>
+        <p>Es geht dein Standard-Browser auf. Die Maschine selbst hängt an keinem Konto, du kannst sie auch in Chrome öffnen. Dafür diese Adresse in Chrome aufrufen und als Lesezeichen speichern:</p>
+        <div class="cmd"><code>http://localhost:8790/sprueche-pro.html</code><button type="button" data-copy>Kopieren</button></div>
+        <p class="muted">Für das Dock: Rechtsklick auf <b>start.command</b> → <b>Alias erzeugen</b> → das Alias in „Start Physiopoly“ umbenennen → ins Dock ziehen. So sind die beiden Start-Symbole nicht zu verwechseln.</p></div></li>
+    <li class="step" id="e10"><input type="checkbox" id="cb-e10" aria-labelledby="t-e10"><div class="shead"><span class="num">E10</span><label class="t" id="t-e10" for="cb-e10">Erste Karte zur Probe (≈ 0,02 $)</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Einen Physio-Beitrag auswählen, Style <b>2.2</b> anklicken. Oben muss <b>💰 Spar-Bild · 4 Credits</b> stehen. Dann <b>⚡ Generieren</b>. Das Ergebnis erscheint unter <b>🖼️ Ergebnisse</b>.</p></div></li>
+    <li class="step" id="e11"><input type="checkbox" id="cb-e11" aria-labelledby="t-e11"><div class="shead"><span class="num">E11</span><label class="t" id="t-e11" for="cb-e11">claude.ai/code in Chrome mit GitHub verbinden</label><span class="chip c-web">Chrome</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><ul><li>In Chrome <a href="https://claude.ai/code">claude.ai/code</a> öffnen, angemeldet mit dem Firmen-Abo</li>
+          <li><b>GitHub verbinden</b>. Bei der Installation der Claude-App <b>Only select repositories</b> wählen und <b>beide</b> Repos anhaken: <span class="out">physiopoly-content-maschine</span> und <span class="out">content-maschine-diy</span>. Beide Claude-Konten nutzen dieselbe App auf deinem GitHub-Konto.</li>
+          <li>In Chrome wählst du danach immer nur <b>physiopoly-content-maschine</b>.</li></ul></div></li>
+  </ol>
+</section>
+
+<!-- F ------------------------------------------------------------------ -->
+<section class="phase p-spaeter" data-phase="F">
+  <div class="phead"><span class="letter">F</span><h2>Später: Updates und Änderungen</h2><span class="pcount"></span></div>
+  <ol class="steps">
+    <li class="step" id="f1"><input type="checkbox" id="cb-f1" aria-labelledby="t-f1"><div class="shead"><span class="num">F1</span><label class="t" id="t-f1" for="cb-f1">Neue Version holen (einmal ausprobiert)</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Das Maschinen-Fenster schließen, den Befehl ausführen und dann wieder starten. Deine Listen, Bilder, Ergebnisse und Keys bleiben dabei unberührt.</p>
+        <div class="cmd"><code>bash ~/content-maschine-diy/aktualisieren.command</code><button type="button" data-copy>Kopieren</button></div>
+        <div class="cmd"><code>bash ~/physiopoly-content-maschine/aktualisieren.command</code><button type="button" data-copy>Kopieren</button></div></div></li>
+    <li class="step" id="f2"><input type="checkbox" id="cb-f2" aria-labelledby="t-f2"><div class="shead"><span class="num">F2</span><label class="t" id="t-f2" for="cb-f2">Unterwegs etwas ändern lassen (claude.ai/code)</label><span class="chip c-web">Browser</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><ul><li><a href="https://claude.ai/code">claude.ai/code</a> öffnen: <b>Safari</b> mit deinem privaten Konto und Repo <span class="out">content-maschine-diy</span>, <b>Chrome</b> mit dem Firmen-Abo und Repo <span class="out">physiopoly-content-maschine</span></li>
+          <li>Beim ersten Mal in Safari ebenfalls <b>GitHub verbinden</b>. Die Claude-App ist seit E11 schon für beide Repos freigegeben.</li>
+          <li>Repo auswählen und den Wunsch reinschreiben. Claude ändert, testet und macht einen <b>Pull Request</b></li>
+          <li>Auf github.com → <b>Pull requests</b> → <b>Merge pull request</b> → <b>Confirm merge</b></li>
+          <li>Auf dem Mac aktualisieren, wie in F1</li></ul></div></li>
+    <li class="step" id="f3"><input type="checkbox" id="cb-f3" aria-labelledby="t-f3"><div class="shead"><span class="num">F3</span><label class="t" id="t-f3" for="cb-f3">PC und Mac auf gleichem Stand halten</label><span class="chip c-pc">PC</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Wurde unterwegs etwas geändert, sagst du Claude am PC <b>„hol die neue Version“</b>. Ändert Claude etwas am PC, sagst du <b>„hochladen“</b>, dann holt es der Mac mit F1.</p></div></li>
+  </ol>
+</section>
+
+<section class="help" aria-labelledby="hilfe">
+  <h2 id="hilfe">Wenn etwas hakt</h2>
+  <dl>
+    <dt>„Python 3.9 oder neuer fehlt“</dt><dd>Ein neues Terminalfenster öffnen (<kbd>Cmd</kbd>+<kbd>N</kbd>) und den Befehl nochmal starten. Kommt es wieder, das Ergebnis von C1 an Claude schicken.</dd>
+    <dt>„invalid active developer path“</dt><dd>Mit <span class="out">xcode-select --install</span> die Entwicklertools neu installieren, siehe C2.</dd>
+    <dt>„kann nicht geöffnet werden“ bei einer .command-Datei</dt><dd>Rechtsklick auf die Datei → Öffnen → Öffnen. Oder den Befehl mit <span class="out">bash …</span> ins Terminal kopieren.</dd>
+    <dt>„Repository not found“ beim git clone</dt><dd>Der Token kennt das Repo noch nicht. Den Token wie in E3 bearbeiten und beide Repos auswählen.</dd>
+    <dt>Die Maschine startet nicht, oder der Browser zeigt nichts</dt><dd>Läuft schon ein altes Fenster der Maschine? Das schließen und neu starten.</dd>
+    <dt>Irgendetwas Rotes oder ein ✗</dt><dd>Einen Screenshot vom Terminal an Claude im Chat schicken. Keys dabei nie abtippen.</dd>
+  </dl>
+</section>
+</div>
+
+<script>
+(function(){
+  try{var t=document.createElement('div');t.style.display='flex';t.style.flexDirection='column';t.style.rowGap='1px';t.appendChild(document.createElement('div'));t.appendChild(document.createElement('div'));document.body.appendChild(t);if(t.scrollHeight!==1)document.documentElement.className+=' kein-flexgap';document.body.removeChild(t);}catch(e){}
+  var SCHLUESSEL='mac-einrichtung-v2';
+  var stand={};
+  try{stand=JSON.parse(localStorage.getItem(SCHLUESSEL)||'{}')||{};}catch(e){stand={};}
+  function speichern(){try{localStorage.setItem(SCHLUESSEL,JSON.stringify(stand));}catch(e){}}
+  var schritte=[].slice.call(document.querySelectorAll('li.step'));
+  schritte.forEach(function(li){
+    var cb=li.querySelector('input[type=checkbox]');
+    var an=(li.id in stand)?!!stand[li.id]:li.getAttribute('data-vorab')==='1';
+    cb.checked=an;
+    cb.addEventListener('change',function(){stand[li.id]=cb.checked;speichern();zeigen();});
+  });
+  function zeigen(){
+    var fertig=0,naechster=null;
+    schritte.forEach(function(li){
+      var an=li.querySelector('input').checked;
+      li.classList.toggle('done',an);li.classList.remove('next');
+      if(an)fertig++;else if(!naechster)naechster=li;
+    });
+    if(naechster)naechster.classList.add('next');
+    document.getElementById('count').textContent=fertig+' / '+schritte.length;
+    document.getElementById('fill').style.width=(100*fertig/schritte.length)+'%';
+    [].forEach.call(document.querySelectorAll('section.phase'),function(sec){
+      var l=sec.querySelectorAll('li.step'),d=sec.querySelectorAll('li.step input:checked').length;
+      sec.querySelector('.pcount').textContent=d+' / '+l.length+' erledigt';
+    });
+    var w=document.getElementById('weiter');
+    w.textContent=naechster?'Zum nächsten Schritt':'Alles erledigt';
+    w.disabled=!naechster;
+  }
+  document.getElementById('weiter').addEventListener('click',function(){
+    var n=document.querySelector('li.step.next');
+    if(n){n.scrollIntoView({behavior:'smooth',block:'center'});n.querySelector('input').focus({preventScroll:true});}
+  });
+  var r=document.getElementById('reset'),rT=null;
+  r.addEventListener('click',function(){
+    if(!rT){r.textContent='Wirklich alles zurücksetzen?';rT=setTimeout(function(){r.textContent='Zurücksetzen';rT=null;},4000);return;}
+    clearTimeout(rT);rT=null;r.textContent='Zurücksetzen';
+    stand={};speichern();
+    schritte.forEach(function(li){li.querySelector('input').checked=li.getAttribute('data-vorab')==='1';});
+    zeigen();
+  });
+  [].forEach.call(document.querySelectorAll('[data-copy]'),function(b){
+    b.addEventListener('click',function(){
+      var code=b.parentNode.querySelector('code'),text=code.textContent;
+      function markieren(){
+        var rg=document.createRange();rg.selectNodeContents(code);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(rg);
+        b.textContent='Markiert, jetzt Cmd+C';setTimeout(function(){b.textContent='Kopieren';},2500);
+      }
+      try{
+        navigator.clipboard.writeText(text).then(function(){
+          b.textContent='Kopiert';setTimeout(function(){b.textContent='Kopieren';},1800);
+        },markieren);
+      }catch(e){markieren();}
+    });
+  });
+  zeigen();
+})();
+</script>
+</body>
+</html>
