@@ -278,6 +278,49 @@ kbd{font:500 .8rem var(--mono);border:1px solid var(--line);border-bottom-width:
   </ol>
 </section>
 
+<!-- G ------------------------------------------------------------------ -->
+<section class="phase p-firma" data-phase="G">
+  <div class="phead"><span class="letter">G</span><h2>Neu: Erklär-Karussell, Claude-Chat, Wissensdatenbank</h2><span class="pcount"></span></div>
+  <p class="pnote">Stand 04.11. abends. Alles läuft auf dem Mac, der PC wird dafür nicht gebraucht. Physiopoly-Maschine in <b>Chrome</b>, Adresse <span class="out">localhost:8790</span>.</p>
+  <ol class="steps">
+    <li class="step" id="g1"><input type="checkbox" id="cb-g1" aria-labelledby="t-g1"><div class="shead"><span class="num">G1</span><label class="t" id="t-g1" for="cb-g1">Physio-Maschine aktualisieren</label><span class="chip c-term">Terminal</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>Läuft die Physio-Maschine, zuerst ihr Terminalfenster schließen. Dann einfügen, Enter:</p>
+        <div class="cmd"><code>bash ~/physiopoly-content-maschine/aktualisieren.command</code><button type="button" data-copy>Kopieren</button></div>
+        <ul><li>Es kommen: Erklär-Karussell, Claude-Chat, Wissensdatenbank und die 4 neuen Facebook-Listen (Physio Meets Science, Physio Memes, Squat University, Visible Body)</li>
+          <li>Unter <span class="out">Startdaten</span> steht <span class="out">✓ 4 neue Liste(n) nach Seiten/ kopiert</span></li>
+          <li>Am Ende <span class="out">Fertig.</span>, beliebige Taste</li></ul>
+        <p>Danach wieder starten:</p>
+        <div class="cmd"><code>bash ~/physiopoly-content-maschine/start.command</code><button type="button" data-copy>Kopieren</button></div>
+        <p class="muted">Steht <span class="out">Holen ging nicht</span>: Internet prüfen und nochmal versuchen. Den Befehl kannst du jederzeit wiederholen, er holt immer den neuesten Stand.</p></div></li>
+    <li class="step" id="g2"><input type="checkbox" id="cb-g2" aria-labelledby="t-g2"><div class="shead"><span class="num">G2</span><label class="t" id="t-g2" for="cb-g2">Erklär-Karussell erstellen (≈ 0,16 $ je Karussell)</label><span class="chip c-web">Chrome</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Chrome öffnen (oder im Dashboard oben auf <b>🦴 Erklär-Karussell</b>):</p>
+        <div class="cmd"><code>http://localhost:8790/erklaer.html</code><button type="button" data-copy>Kopieren</button></div>
+        <ul><li>Schmerz oder Thema eintragen, eine Zeile = ein Karussell, zum Beispiel <span class="out">Knieschmerzen beim Treppensteigen</span>. Die Knöpfe darunter fügen häufige Themen mit einem Klick ein.</li>
+          <li><b>Gründe je Karussell</b> (Standard 5), oben <b>💰 Spar · 4 Credits</b> lassen, dann <b>🦴 Karussells erstellen</b></li>
+          <li>Nach 3–5 Minuten erscheint das Karussell unten: Folien ansehen, <b>⬇ Instagram 4:5</b> oder <b>⬇ TikTok 9:16</b> laden (ZIP mit allen Folien und der Beschreibung), <b>📋 Beschreibung</b> kopiert den Text</li>
+          <li>Jede Folie vor dem Posten kurz ansehen. Steht auf der Karte <b>⚠ Bitte ansehen</b>, war die automatische Prüfung bei einer Beschriftung nicht ganz zufrieden.</li></ul>
+        <p class="muted">Die Bilder bezahlt der Firmen-KIE-Key aus E7. Ein älteres Karussell bringst du mit <b>🔁 Folien neu setzen</b> auf den neuesten Look, ohne neue Bildkosten.</p></div></li>
+    <li class="step" id="g3"><input type="checkbox" id="cb-g3" aria-labelledby="t-g3"><div class="shead"><span class="num">G3</span><label class="t" id="t-g3" for="cb-g3">Mit Claude Styles bearbeiten</label><span class="chip c-web">Chrome</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Chrome öffnen (oder im Dashboard oben auf <b>💬 Claude</b>):</p>
+        <div class="cmd"><code>http://localhost:8790/chat.html</code><button type="button" data-copy>Kopieren</button></div>
+        <ul><li>Einfach schreiben, wie im Chat: <span class="out">Leg einen neuen Comic-Style an, der aussieht wie ein Kinderbuch</span> oder <span class="out">Mach die Hooks beim Erklär-Karussell kürzer</span></li>
+          <li>Claude ändert die Styles direkt in der Maschine und sagt dir, was er geändert hat. Danach das Dashboard neu laden.</li>
+          <li><b>＋ Neues Gespräch</b> beginnt von vorn, die Änderungen bleiben</li></ul>
+        <p class="muted">Der Chat nutzt Claude Code auf diesem Mac, also die Anmeldung aus D7. Steht oben gelb „nicht angemeldet“: im Terminal <span class="out">~/.local/bin/claude auth login</span> ausführen, danach geht es sofort. Deine Schlüssel kann Claude dort nicht lesen.</p></div></li>
+    <li class="step" id="g4"><input type="checkbox" id="cb-g4" aria-labelledby="t-g4"><div class="shead"><span class="num">G4</span><label class="t" id="t-g4" for="cb-g4">Obsidian installieren</label><span class="chip c-web">Safari</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In Safari <a href="https://obsidian.md/download">obsidian.md/download</a> öffnen → <b>macOS</b> → die <span class="out">.dmg</span>-Datei öffnen → Obsidian auf <b>Programme</b> ziehen.</p>
+        <p class="muted">Fragt der Mac nach einem Admin-Passwort: Obsidian wie Chrome in E1 in deinen eigenen Ordner „Programme“ im Benutzerordner ziehen.</p></div></li>
+    <li class="step" id="g5"><input type="checkbox" id="cb-g5" aria-labelledby="t-g5"><div class="shead"><span class="num">G5</span><label class="t" id="t-g5" for="cb-g5">Wissensdatenbank in Obsidian öffnen</label><span class="chip c-web">Obsidian</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><ul><li>Obsidian starten → <b>Ordner als Vault öffnen</b> (Open folder as vault)</li>
+          <li>Im Auswahlfenster <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd> → <span class="out">physiopoly-content-maschine</span> → <span class="out">Physiopoly-Wissen</span> → <b>Öffnen</b></li>
+          <li>Links <b>Start</b> öffnen: Kanäle, Körperregionen und <b>Hooks</b> (die meistgesehenen Titel). Je Video eine Notiz mit Hook, Kapiteln und Transkript, die Zeitmarken springen direkt an die Stelle im Video.</li></ul>
+        <p class="muted">Neue Transkripte kommen mit G1. Die Videos sind fremde Inhalte: nur als Anregung nutzen, eigene Texte schreiben, Fachaussagen prüfen.</p></div></li>
+    <li class="step" id="g6"><input type="checkbox" id="cb-g6" aria-labelledby="t-g6"><div class="shead"><span class="num">G6</span><label class="t" id="t-g6" for="cb-g6">NotebookLM: Fragen an die Videos</label><span class="chip c-web">Safari</span><span class="next-tag">als Nächstes</span></div>
+      <div class="body"><p>In <b>Safari</b> (privates Google-Konto) <a href="https://notebooklm.google.com">notebooklm.google.com</a> öffnen. Je Kanal gibt es ein Notebook <span class="out">Physiopoly-Wissen · …</span>, die Links stehen auch in Obsidian unter <b>Start</b>.</p>
+        <p>Zum Beispiel fragen: <span class="out">Welche Alltagsauslöser für Knieschmerzen nennen die Videos?</span> oder <span class="out">Welche Einstiege benutzen die erfolgreichsten Videos?</span></p></div></li>
+  </ol>
+</section>
+
 <!-- F ------------------------------------------------------------------ -->
 <section class="phase p-spaeter" data-phase="F">
   <div class="phead"><span class="letter">F</span><h2>Später: Updates und Änderungen</h2><span class="pcount"></span></div>
